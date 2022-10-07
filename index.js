@@ -43,13 +43,16 @@ const cors = require('cors');
 const app = express(); 
 
 const router = require("./controllers/chatController");
-//const server = https.createServer(SSL_CONFIG,app);
+const server = http.createServer(app);
 
  const0 server = http.createServer(app);
 const io = socketio(server); 
 
 app.use(cors());
 app.use(router); 
+
+const roomRouter = require("./routes/room");
+app.use("/",roomRouter);
 
 const peerServer = ExpressPeerServer(server, {
     debug: true,
