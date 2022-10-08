@@ -4,7 +4,8 @@ const express = require("express");
 const socketio = require("socket.io"); 
 const http = require("http");
 const { ExpressPeerServer } = require('peer');
-
+const schedule = require('node-schedule');
+const controlRooms = require("./controllers/controlRooms"); 
 
 const twilioObj = {
     username : null,
@@ -36,8 +37,6 @@ const app = express();
 
 const router = require("./controllers/chatController");
 const server = http.createServer(app);
-
- const0 server = http.createServer(app);
 const io = socketio(server); 
 
 app.use(cors());
