@@ -4,8 +4,7 @@ const express = require("express");
 const socketio = require("socket.io"); 
 const http = require("http");
 const { ExpressPeerServer } = require('peer');
-const schedule = require('node-schedule');
-const controlRooms = require("./controllers/controlRooms"); 
+
 
 const twilioObj = {
     username : null,
@@ -19,16 +18,16 @@ client.tokens.create().then(token => {
     twilioObj.username = token.username;
     twilioObj.cred = token.password; 
 });
-
-//every 12 hours 
-schedule.scheduleJob("*/12 * * *",()=>{
-    console.log("CRON running"); 
+const schedule = require('node-schedule');
+let rule = new schedule.RecurrenceRule();
+rule.hour = 12;
+schedule.scheduleJob(rule,()=>{
+    console.log("running"); 
     const client = require('twilio')(process.env.accountSid, process.env.authToken);
     client.tokens.create().then(token => {
         twilioObj.username = token.username;
         twilioObj.cred = token.password; 
     });
-    controlRooms.deQRoom();
 })
 //========================================================================
 
@@ -42,9 +41,6 @@ const io = socketio(server);
 
 app.use(cors());
 app.use(router); 
-
-const roomRouter = require("./routes/room");
-app.use("/",roomRouter);
 
 const peerServer = ExpressPeerServer(server, {
     debug: true,
