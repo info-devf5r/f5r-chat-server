@@ -60,15 +60,15 @@ io.on('connection', socket => {
 
     socket.on('join',({name,room},callBack)=>{ 
 
-        const user = addUser({id:socket.id,name,room});  //تدمير الكائن
+        const user = addUser({id:socket.id,name,room});  //destructuring the object 
         if(user.error) return callBack(user.error); 
-        socket.join(user.room) //ينضم إلى مستخدم في الغرفة 
-        socket.emit('message',{user:'admin', text:`أهلا وسهلا ${user.name} `}); //أرسل إلى المستخدم
+        socket.join(user.room) //joins a user in a room 
+        socket.emit('message',{user:'admin', text:`Welcome ${user.name} in room ${user.room}.`}); //send to user
         socket.emit('usersinvoice-before-join',{users:getUsersInVoice(user.room)});
-        socket.broadcast.to(user.room).emit('message',{user:'admin', text:`${user.name} has joined the room`}); //يرسل رسالة إلى جميع المستخدمين في الغرفة باستثناء هذا المستخدم
+        socket.broadcast.to(user.room).emit('message',{user:'admin', text:`${user.name} has joined the room`}); //sends message to all users in room except this user
         io.to(user.room).emit('users-online', { room: user.room, users: getUsersInRoom(user.room) });
         //console.log(getUsersInRoom(user.room)); 
-        callBack(twilioObj); // تمرير أي أخطاء للواجهة الأمامية في الوقت الحالي 
+        callBack(twilioObj); // passing no errors to frontend for now 
         //callBack(); 
     }); 
 
