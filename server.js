@@ -1,22 +1,29 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
-const DbConnect = require("./database");
-const router = require("./routes");
+const userRoutes = require("./routes/userRoutes");
+
+const rooms = ["general", "tech", "finance", "crypto"];
 const cors = require("cors");
-
-const corsOption = {
-  origin: ["http://localhost:3000"],
-};
-app.use(cors(corsOption));
-
-const PORT = process.env.PORT || 5500;
-DbConnect();
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(express.json());
-app.use(router);
+app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello from express Js");
+app.use("/users", userRoutes);
+require("./connection");
+
+const server = require("http").createServer(app);
+const PORT = 5001;
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log("listening to port", PORT);
+});
