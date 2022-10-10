@@ -10,7 +10,7 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const corsConfig = {
-    origin: CLIENT_URL, //react frontend url
+    origin: CLIENT_URL, //رد عنوان URL للواجهة الأمامية
     methods: ["GET", "POST", "DELETE", "PUT"]
 }
 const io = new Server(server, {
