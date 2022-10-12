@@ -1,7 +1,12 @@
 require('dotenv').config()
 
 const express = require("express");   
-const socketio = require("socket.io"); 
+const socketio = require("socket.io");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
+
+const httpServer = createServer();
 const http = require("http");
 const { ExpressPeerServer } = require('peer');
 const schedule = require('node-schedule');
@@ -11,7 +16,18 @@ const twilioObj = {
     username : null,
     cred : null 
 }
+const httpServer = createServer();
 
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
+});
+
+instrument(io, {
+  auth: false
+});
 // Voice chat uses turn server, not required locally 
 if(process.env.USE_TWILIO==="yes") { 
     const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
